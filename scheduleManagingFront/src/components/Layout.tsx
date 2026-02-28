@@ -1,132 +1,134 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { 
-  LayoutDashboard, Calendar, Users, UserCheck, 
-  Wallet, BarChart3, LogOut, Sun, Moon, 
-  Menu, X, Bell, Search 
+  LayoutDashboard, Calendar, Users, 
+  Wallet, LogOut, Menu, Bell, X, Plus
 } from 'lucide-react';
 
 interface LayoutProps {
-  children: React.ReactNode;
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
-  onLogout: () => void;
+  children?: React.ReactNode;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, activeTab, setActiveTab, onLogout }) => {
-  const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+const Layout: React.FC<LayoutProps> = ({ children }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    if (theme === 'dark') document.documentElement.classList.add('dark');
-    else document.documentElement.classList.remove('dark');
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+  // [Gemini Update]: 다크 모드 로직 완전 제거 및 극강의 라이트 테마 고정
+  // 모든 배경과 텍스트를 가장 밝고 선명한 톤으로 설정했습니다.
 
-  const menuGroups = [
-    {
-      group: "Overview",
-      items: [
-        { id: 'dashboard', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
-        { id: 'calendar', label: 'Scheduler', icon: <Calendar size={18} /> },
-      ]
-    },
-    {
-      group: "Management",
-      items: [
-        { id: 'instructors', label: 'Partners', icon: <UserCheck size={18} /> },
-        { id: 'members', label: 'Members', icon: <Users size={18} /> },
-      ]
-    },
-    {
-      group: "Finance",
-      items: [
-        { id: 'settlement', label: 'Payroll', icon: <Wallet size={18} /> },
-      ]
-    }
+  const menuItems = [
+    { id: 'dashboard', label: '홈', path: '/dashboard', icon: <LayoutDashboard size={20} /> },
+    { id: 'calendar', label: '스케줄', path: '/calendar', icon: <Calendar size={20} /> },
+    { id: 'members', label: '회원관리', path: '/members', icon: <Users size={20} /> },
+    { id: 'settlement', label: '정산현황', path: '/settlement', icon: <Wallet size={20} /> },
   ];
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  };
+
+  const isActive = (path: string) => location.pathname === path;
+
   return (
-    <div className="flex h-screen bg-[var(--bg-main)] text-[var(--text-main)] font-sans overflow-hidden">
+    <div className="flex h-screen bg-slate-50 text-slate-900 font-sans overflow-hidden transition-colors duration-300">
       
-      {/* Sidebar: Strict separation */}
-      <aside className={`fixed inset-y-0 left-0 z-50 w-[260px] bg-[var(--bg-card)] border-r border-[var(--border-ui)] transform transition-transform duration-300 md:relative md:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <div className="h-16 flex items-center px-6 border-b border-[var(--border-ui)]">
-          <div className="w-8 h-8 bg-brand-600 rounded-lg flex items-center justify-center mr-3">
-             <div className="w-3 h-3 bg-white rounded-sm"></div>
+      {/* 1. Mobile Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/10 backdrop-blur-[2px] z-40 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
+      {/* 2. Sidebar (극강의 화이트 테마) */}
+      <aside className={`fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-slate-200/60 md:relative md:translate-x-0 transition-transform duration-500 ease-in-out shadow-sm ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="h-24 flex items-center justify-between px-8">
+          <div className="text-2xl font-black text-indigo-600 tracking-tighter cursor-pointer" onClick={() => navigate('/dashboard')}>
+            Schedule<span className="text-slate-900">+</span>
           </div>
-          <span className="font-bold tracking-tight">NexusFlow</span>
-          <button className="md:hidden ml-auto text-[var(--text-muted)]" onClick={() => setIsSidebarOpen(false)}><X size={20}/></button>
+          <button className="md:hidden p-2 text-slate-400" onClick={() => setIsSidebarOpen(false)}>
+            <X size={24} />
+          </button>
         </div>
 
-        <nav className="p-4 space-y-6 mt-2 overflow-y-auto h-[calc(100vh-140px)]">
-          {menuGroups.map((group, gIdx) => (
-            <div key={gIdx} className="space-y-1">
-              <p className="px-3 text-xs font-semibold text-[var(--text-muted)] mb-2">{group.group}</p>
-              {group.items.map((item) => {
-                const isActive = activeTab === item.id;
-                return (
-                  <button
-                    key={item.id}
-                    onClick={() => { setActiveTab(item.id); setIsSidebarOpen(false); }}
-                    className={`w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive
-                        ? 'bg-[var(--bg-hover)] text-brand-600 dark:text-white'
-                        : 'text-[var(--text-muted)] hover:bg-[var(--bg-hover)] hover:text-[var(--text-main)]'
-                    }`}
-                  >
-                    {item.icon} {item.label}
-                  </button>
-                );
-              })}
-            </div>
+        <nav className="px-4 space-y-1.5 mt-2">
+          {menuItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => { navigate(item.path); setIsSidebarOpen(false); }}
+              className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold transition-all duration-200 ${
+                isActive(item.path) 
+                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100 translate-x-1' 
+                : 'text-slate-500 hover:bg-slate-50 hover:text-indigo-600'
+              }`}
+            >
+              <span className={isActive(item.path) ? 'text-white' : 'text-slate-400 group-hover:text-indigo-600'}>
+                {item.icon}
+              </span>
+              <span>{item.label}</span>
+            </button>
           ))}
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[var(--border-ui)] bg-[var(--bg-card)] flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-brand-100 overflow-hidden border border-[var(--border-ui)]">
-              <img src="https://api.dicebear.com/7.x/notionists/svg?seed=Admin" alt="avatar" />
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="text-xs font-bold leading-tight">Admin User</span>
-              <button onClick={onLogout} className="text-[10px] text-[var(--text-muted)] hover:text-brand-600 text-left">Sign out</button>
+        <div className="absolute bottom-8 left-6 right-6 space-y-3">
+          <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 mb-6">
+            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">My Profile</p>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center text-indigo-600 font-black">JS</div>
+              <div className="overflow-hidden">
+                <p className="text-sm font-bold text-slate-900 truncate">김지수 관리자</p>
+                <p className="text-xs text-slate-500 truncate">Premium Plan</p>
+              </div>
             </div>
           </div>
+
+          <button 
+            onClick={handleLogout} 
+            className="w-full flex items-center justify-center gap-3 h-12 rounded-xl text-rose-500 font-bold text-xs hover:bg-rose-50 transition-all"
+          >
+            <LogOut size={16} /> 로그아웃
+          </button>
         </div>
       </aside>
 
-      {/* Main Content: Constrained to screen */}
-      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden bg-[var(--bg-main)]">
-        <header className="h-16 bg-[var(--bg-card)] border-b border-[var(--border-ui)] flex items-center justify-between px-4 md:px-8 shrink-0">
+      {/* 3. Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        <header className="h-20 bg-white/80 backdrop-blur-md border-b border-slate-200/60 flex items-center justify-between px-6 md:px-10 shrink-0 z-30">
           <div className="flex items-center gap-4">
-            <button className="md:hidden p-2 text-[var(--text-muted)]" onClick={() => setIsSidebarOpen(true)}>
-              <Menu size={20} />
+            <button 
+              className="md:hidden p-2.5 bg-slate-50 rounded-xl text-slate-500 shadow-sm" 
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              <Menu size={20}/>
             </button>
-            <div className="relative hidden md:block">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
-              <input type="text" placeholder="Search..." className="w-64 h-9 pl-9 pr-4 rounded-md bg-[var(--bg-hover)] border-none text-sm outline-none focus:ring-2 focus:ring-brand-500/20 text-[var(--text-main)] placeholder-[var(--text-muted)]" />
-            </div>
+            <h2 className="text-xl font-black text-slate-900 tracking-tight">
+              {menuItems.find(m => m.path === location.pathname)?.label || '개요'}
+            </h2>
           </div>
-          
-          <div className="flex items-center gap-4">
-            <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className="p-2 text-[var(--text-muted)] hover:text-[var(--text-main)] rounded-md hover:bg-[var(--bg-hover)] transition-colors">
-              {theme === 'light' ? <Moon size={18}/> : <Sun size={18}/>}
-            </button>
-            <div className="w-px h-5 bg-[var(--border-ui)]"></div>
-            <button className="relative p-2 text-[var(--text-muted)] hover:text-[var(--text-main)] rounded-md hover:bg-[var(--bg-hover)] transition-colors">
-              <Bell size={18} />
-              <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-brand-500 rounded-full"></span>
-            </button>
+          <div className="flex items-center gap-5">
+             <div className="hidden sm:flex flex-col items-end pr-5 border-r border-slate-200/60">
+                <p className="text-[10px] text-slate-400 font-black uppercase tracking-[0.15em] mb-0.5">
+                  {new Date().toLocaleDateString('ko-KR', { weekday: 'long' })}
+                </p>
+                <p className="text-sm font-black text-slate-900">
+                  {new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' })}
+                </p>
+             </div>
+             <button className="p-2.5 text-slate-400 hover:text-indigo-600 transition-all relative group">
+               <Bell size={22} />
+               <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white animate-pulse"></span>
+             </button>
           </div>
         </header>
 
-        {/* Scrollable area clearly contained */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8">
-          <div className="max-w-7xl mx-auto pb-10">
-            <div className="mb-6">
-               <h1 className="text-2xl font-bold text-[var(--text-main)] capitalize">{activeTab}</h1>
+        <main className="flex-1 overflow-y-auto p-6 md:p-10 scroll-smooth">
+          <div className="max-w-6xl mx-auto pb-20">
+            {/* [Gemini Update]: 카드는 순백색으로 배경(slate-50)과 대비 형성 */}
+            <div className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(0,0,0,0.02)] border border-slate-100">
+              {children || <Outlet />}
             </div>
-            {children}
           </div>
         </main>
       </div>
