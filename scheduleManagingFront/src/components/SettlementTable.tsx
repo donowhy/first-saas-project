@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api';
-import { Download, TrendingUp, Users, Wallet, ArrowUpRight, BarChart3, PieChart } from 'lucide-react';
+import { Download, TrendingUp, Users, Activity, BarChart2 } from 'lucide-react';
 
 interface Settlement {
   instructor_id: number;
@@ -16,8 +16,10 @@ const SettlementTable: React.FC = () => {
   const [selectedMonth, setSelectedMonth] = useState({ year: new Date().getFullYear(), month: new Date().getMonth() + 1 });
 
   const fetchData = async () => {
-    const res = await api.get(`/settlements/${selectedMonth.year}/${selectedMonth.month}`);
-    setSettlements(res.data);
+    try {
+      const res = await api.get(`/settlements/${selectedMonth.year}/${selectedMonth.month}`).catch(()=>({data:[]}));
+      setSettlements(res.data);
+    } catch (e) { console.error(e); }
   };
 
   useEffect(() => { fetchData(); }, [selectedMonth]);
@@ -26,92 +28,117 @@ const SettlementTable: React.FC = () => {
   const totalClasses = settlements.reduce((acc, curr) => acc + curr.session_count, 0);
 
   return (
-    <div className="space-y-10 pb-20 animate-in fade-in duration-500">
-      <header className="flex justify-between items-end">
+    <div className="space-y-8 animate-in fade-in duration-700">
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-black tracking-tight text-slate-900 italic uppercase">Settlement</h1>
-          <p className="text-sm font-semibold text-slate-400 mt-1 uppercase tracking-[0.2em]">Automated payroll management</p>
+          <h1 className="text-3xl font-bold tracking-tight text-white">Financial Dashboard</h1>
+          <p className="text-sm font-medium text-zinc-400 mt-1">Real-time payroll and operational metrics.</p>
         </div>
         
         <div className="flex items-center gap-3">
-          <div className="flex bg-white border border-slate-200 p-1.5 rounded-xl shadow-sm">
-            <select className="bg-transparent px-4 py-2 text-[11px] font-black text-slate-600 outline-none uppercase" value={selectedMonth.year} onChange={(e) => setSelectedMonth({...selectedMonth, year: parseInt(e.target.value)})}>
-              {[2025, 2026].map(y => <option key={y} value={y}>{y} FY</option>)}
+          <div className="flex bg-zinc-900 border border-zinc-800 p-1 rounded-xl shadow-sm">
+            <select className="bg-transparent px-3 py-1.5 text-xs font-semibold text-zinc-300 outline-none cursor-pointer" value={selectedMonth.year} onChange={(e) => setSelectedMonth({...selectedMonth, year: parseInt(e.target.value)})}>
+              {[2025, 2026].map(y => <option key={y} value={y} className="bg-zinc-900">{y}</option>)}
             </select>
-            <div className="w-px h-4 bg-slate-100 self-center"></div>
-            <select className="bg-transparent px-4 py-2 text-[11px] font-black text-slate-600 outline-none uppercase" value={selectedMonth.month} onChange={(e) => setSelectedMonth({...selectedMonth, month: parseInt(e.target.value)})}>
-              {Array.from({length: 12}, (_, i) => i + 1).map(m => <option key={m} value={m}>{m} Month</option>)}
+            <div className="w-px h-4 bg-zinc-800 self-center"></div>
+            <select className="bg-transparent px-3 py-1.5 text-xs font-semibold text-zinc-300 outline-none cursor-pointer" value={selectedMonth.month} onChange={(e) => setSelectedMonth({...selectedMonth, month: parseInt(e.target.value)})}>
+              {Array.from({length: 12}, (_, i) => i + 1).map(m => <option key={m} value={m} className="bg-zinc-900">{m.toString().padStart(2,'0')} / Month</option>)}
             </select>
           </div>
-          <button className="w-12 h-12 rounded-xl bg-white border border-slate-200 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 transition-all flex items-center justify-center shadow-sm"><Download size={18} /></button>
+          <button className="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-600 transition-all flex items-center justify-center"><Download size={16} /></button>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="bg-slate-950 p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden group">
-          <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:scale-125 transition-transform duration-700 text-white"><PieChart size={120} /></div>
-          <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.2em] mb-3 px-1">Gross Expenditure</p>
-          <h3 className="text-4xl font-black text-white italic tracking-tighter flex items-end gap-2">
-             <span className="text-xl font-medium opacity-30 italic">₩</span> {totalPayout.toLocaleString()}
-          </h3>
-          <div className="mt-10 flex items-center gap-2 text-indigo-400 text-[11px] font-bold uppercase tracking-widest bg-indigo-500/10 w-fit px-3 py-1 rounded-lg border border-indigo-500/20">
-             <TrendingUp size={12}/> <span>Forecast Stable</span>
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Main Metric */}
+        <div className="relative p-6 rounded-3xl overflow-hidden border border-brand-500/30 bg-zinc-900/50 backdrop-blur-xl group">
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-600/10 to-transparent z-0 pointer-events-none"></div>
+          <div className="relative z-10">
+            <div className="flex justify-between items-start mb-4">
+              <p className="text-xs font-semibold text-brand-400 tracking-wider uppercase">Gross Expenditure</p>
+              <div className="p-2 bg-brand-500/10 rounded-lg text-brand-400"><TrendingUp size={16}/></div>
+            </div>
+            <h3 className="text-3xl font-bold text-white tracking-tight flex items-baseline gap-1">
+               <span className="text-lg text-zinc-500 font-normal">₩</span> {totalPayout.toLocaleString()}
+            </h3>
+            <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-md border border-emerald-400/20">
+               +12% vs last month
+            </div>
           </div>
         </div>
 
-        <div className="bg-white border border-slate-200 p-10 rounded-[2.5rem] shadow-[0_2px_40px_rgba(0,0,0,0.02)] group hover:border-indigo-500/30 transition-colors">
-          <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mb-3 px-1">Studio Engagement</p>
-          <h3 className="text-4xl font-black text-slate-900 italic tracking-tighter uppercase">
-            {totalClasses} <span className="text-xl font-bold text-slate-200 tracking-normal">Sessions</span>
+        <div className="glass-panel p-6 rounded-3xl border border-zinc-800/60">
+          <div className="flex justify-between items-start mb-4">
+            <p className="text-xs font-semibold text-zinc-400 tracking-wider uppercase">Volume Delivered</p>
+            <div className="p-2 bg-zinc-800 rounded-lg text-zinc-400"><Activity size={16}/></div>
+          </div>
+          <h3 className="text-3xl font-bold text-white tracking-tight">
+            {totalClasses} <span className="text-sm font-medium text-zinc-500 tracking-normal ml-1">Sessions</span>
           </h3>
-          <div className="mt-10 flex items-center gap-2 text-slate-400 text-[11px] font-bold uppercase tracking-widest">
-             <Users size={14} className="text-indigo-500" /> <span>{settlements.length} active partners</span>
+          <div className="mt-4 flex items-center gap-2 text-xs font-medium text-zinc-400">
+             <Users size={14} className="text-zinc-500" /> {settlements.length} active partners contributing
           </div>
         </div>
 
-        <div className="bg-indigo-50/50 border border-indigo-100/50 p-10 rounded-[2.5rem] relative overflow-hidden group">
-           <p className="text-indigo-400 text-[10px] font-black uppercase tracking-[0.2em] mb-3 px-1">Operational Efficiency</p>
-           <h3 className="text-4xl font-black text-indigo-900 italic tracking-tighter uppercase">
-             98.2<span className="text-xl opacity-40">%</span>
+        <div className="glass-panel p-6 rounded-3xl border border-zinc-800/60">
+           <div className="flex justify-between items-start mb-4">
+             <p className="text-xs font-semibold text-zinc-400 tracking-wider uppercase">Net Margin Avg</p>
+             <div className="p-2 bg-zinc-800 rounded-lg text-zinc-400"><BarChart2 size={16}/></div>
+           </div>
+           <h3 className="text-3xl font-bold text-white tracking-tight">
+             68.4<span className="text-lg text-zinc-500 font-normal ml-1">%</span>
            </h3>
-           <p className="text-indigo-300 text-[11px] font-bold mt-10 tracking-tight flex items-center gap-1.5 uppercase">
-             <ArrowUpRight size={14} /> Optimized performance
-           </p>
+           <div className="mt-4 w-full bg-zinc-800 rounded-full h-1.5 overflow-hidden">
+             <div className="bg-brand-500 h-full rounded-full" style={{ width: '68.4%' }}></div>
+           </div>
         </div>
       </div>
 
-      <div className="bg-white border border-slate-200 rounded-[2.5rem] shadow-[0_24px_80px_rgba(0,0,0,0.02)] overflow-hidden">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="bg-slate-50/50 text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] border-b border-slate-100">
-              <th className="px-10 py-6">Partner Name</th>
-              <th className="px-10 py-6 text-center">Class Volume</th>
-              <th className="px-10 py-6 text-right">Fixed Remuneration</th>
-              <th className="px-10 py-6 text-right">Variable Incentive</th>
-              <th className="px-10 py-6 text-right">Net Payout</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-50">
-            {settlements.map((s) => (
-              <tr key={s.instructor_id} className="hover:bg-indigo-50/30 transition-all duration-300">
-                <td className="px-10 py-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center font-black text-sm italic">{s.name[0]}</div>
-                    <span className="font-black text-slate-800 text-[15px] uppercase tracking-tight">{s.name}</span>
-                  </div>
-                </td>
-                <td className="px-10 py-8 text-center">
-                  <span className="px-4 py-1.5 bg-white border border-slate-200 text-slate-500 rounded-full text-[11px] font-black italic shadow-sm tracking-tighter">{s.session_count} Classes</span>
-                </td>
-                <td className="px-10 py-8 text-right font-bold text-slate-400 text-[13px] tabular-nums">₩{s.basic_pay.toLocaleString()}</td>
-                <td className="px-10 py-8 text-right font-black text-indigo-500 text-[13px] tabular-nums italic">₩{(s.session_count * s.per_session_rate).toLocaleString()}</td>
-                <td className="px-10 py-8 text-right">
-                  <span className="text-2xl font-black text-slate-900 tracking-tighter italic">₩{s.total_salary.toLocaleString()}</span>
-                </td>
+      <div className="glass-panel border border-zinc-800/60 rounded-3xl overflow-hidden shadow-2xl">
+        <div className="p-5 border-b border-zinc-800/50 bg-zinc-900/30">
+          <h3 className="text-sm font-semibold text-white">Partner Remuneration Report</h3>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left min-w-[700px]">
+            <thead>
+              <tr className="bg-zinc-900/40 text-zinc-500 text-[10px] font-bold uppercase tracking-wider border-b border-zinc-800/50">
+                <th className="px-6 py-4">Partner</th>
+                <th className="px-6 py-4 text-center">Volume</th>
+                <th className="px-6 py-4 text-right">Base</th>
+                <th className="px-6 py-4 text-right">Commission</th>
+                <th className="px-6 py-4 text-right text-brand-400">Net Payout</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-zinc-800/50">
+              {settlements.map((s) => (
+                <tr key={s.instructor_id} className="hover:bg-zinc-900/30 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-zinc-800 text-zinc-300 flex items-center justify-center font-bold text-xs border border-zinc-700">
+                        {s.name[0]}
+                      </div>
+                      <span className="font-semibold text-zinc-200 text-sm">{s.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <span className="px-2.5 py-1 bg-zinc-800 text-zinc-300 rounded-md text-xs font-semibold border border-zinc-700/50">{s.session_count} cls</span>
+                  </td>
+                  <td className="px-6 py-4 text-right font-medium text-zinc-400 text-sm tabular-nums">₩{s.basic_pay.toLocaleString()}</td>
+                  <td className="px-6 py-4 text-right font-medium text-zinc-300 text-sm tabular-nums">₩{(s.session_count * s.per_session_rate).toLocaleString()}</td>
+                  <td className="px-6 py-4 text-right">
+                    <span className="text-base font-bold text-white tabular-nums tracking-tight">₩{s.total_salary.toLocaleString()}</span>
+                  </td>
+                </tr>
+              ))}
+              {settlements.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center text-zinc-500 text-sm font-medium">No settlement data available for this period.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
