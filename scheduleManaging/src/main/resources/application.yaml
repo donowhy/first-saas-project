@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: scheduleManaging
+
+  # PostgreSQL DB 및 안정적인 커넥션 풀링(HikariCP) 설정
+  datasource:
+    url: jdbc:postgresql://localhost:5432/schedule_db
+    username: schedule_user
+    password: schedule_password
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20       # 대규모 동시 요청 대비 (OOM 및 커넥션 고갈 방지)
+      minimum-idle: 5             # 유휴 커넥션 유지로 성능 최적화
+      idle-timeout: 300000        # 5분 (사용하지 않는 커넥션 회수)
+      connection-timeout: 20000   # 20초 (커넥션 확보 대기 시간, 타임아웃 오류 방지)
+      max-lifetime: 1200000       # 20분 (DB의 커넥션 강제 종료 전 안전하게 회수)
+
+  jpa:
+    hibernate:
+      ddl-auto: update # 개발 환경: update, 운영 환경: validate
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        jdbc:
+          batch_size: 50          # 네트워크 I/O를 줄이기 위한 배치 Insert/Update 활성화
+          time_zone: UTC          # 글로벌 서비스(SaaS)를 위한 기본 타임존 통일
+
+  # JWT 관련 설정 (HS256 알고리즘 사용 시 최소 256비트 이상의 문자열 권장)
+  jwt:
+    secret: "vms-schedule-managing-secret-key-for-jwt-256-bit-minimum-length"
+    expiration: 86400000 # 24시간 (밀리초 단위)
+
+server:
+  port: 8080
+  error:
+    include-message: always       # 디버깅 편의 (운영 시에는 보안상 숨기는 것 권장)
