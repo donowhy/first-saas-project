@@ -33,6 +33,9 @@ dependencies {
     
     runtimeOnly 'org.postgresql:postgresql'
     
+    // Firebase Admin SDK for Push Notifications
+    implementation 'com.google.firebase:firebase-admin:9.4.1'
+    
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 
