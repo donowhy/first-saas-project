@@ -19,16 +19,26 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Service
-@RequiredArgsConstructor
 public class EnrollmentService {
 
     private final ScheduleRepository scheduleRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final UserRepository userRepository;
     private final MembershipRepository membershipRepository;
-    
-    @Qualifier("fcmNotificationService") 
     private final NotificationService fcmService;
+
+    public EnrollmentService(
+            ScheduleRepository scheduleRepository,
+            EnrollmentRepository enrollmentRepository,
+            UserRepository userRepository,
+            MembershipRepository membershipRepository,
+            @Qualifier("fcmNotificationService") NotificationService fcmService) {
+        this.scheduleRepository = scheduleRepository;
+        this.enrollmentRepository = enrollmentRepository;
+        this.userRepository = userRepository;
+        this.membershipRepository = membershipRepository;
+        this.fcmService = fcmService;
+    }
 
     @Transactional
     public void enroll(String email, Long scheduleId) {

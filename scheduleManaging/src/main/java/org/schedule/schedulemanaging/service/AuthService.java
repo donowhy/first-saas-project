@@ -24,6 +24,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final org.schedule.schedulemanaging.service.notification.NotificationService emailNotificationService;
 
     @Transactional
     public void signUp(SignUpRequest request) {
@@ -39,6 +40,13 @@ public class AuthService {
                 .build();
 
         userRepository.save(user);
+
+        // 회원가입 환영 메일 발송
+        emailNotificationService.send(
+            user.getEmail(),
+            "[Nexus] Welcome to our workspace!",
+            "Hi " + user.getName() + ",\n\nWelcome to Nexus! Your account has been successfully created."
+        );
     }
 
     public TokenResponse login(LoginRequest request) {

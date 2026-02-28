@@ -15,12 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class SettlementService {
 
     private final UserRepository userRepository;
-    @Qualifier("alimtalkNotificationService") private final NotificationService alimtalkService;
-    @Qualifier("emailNotificationService") private final NotificationService emailService;
+    private final NotificationService alimtalkService;
+    private final NotificationService emailService;
+
+    public SettlementService(
+            UserRepository userRepository,
+            @Qualifier("alimtalkNotificationService") NotificationService alimtalkService,
+            @Qualifier("emailNotificationService") NotificationService emailService) {
+        this.userRepository = userRepository;
+        this.alimtalkService = alimtalkService;
+        this.emailService = emailService;
+    }
 
     /**
      * 정산(결제 성공) 시 처리 로직.

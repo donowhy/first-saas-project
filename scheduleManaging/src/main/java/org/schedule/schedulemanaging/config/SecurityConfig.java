@@ -24,6 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final org.schedule.schedulemanaging.security.OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -37,8 +38,11 @@ public class SecurityConfig {
             .cors(AbstractHttpConfigurer::disable) // WebConfig에서 별도 설정됨
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // 로그인, 회원가입은 인증 없이 허용
+                .requestMatchers("/api/auth/**", "/oauth2/**", "/login/oauth2/**").permitAll() // 로그인, 회원가입, OAuth2 인증은 허용
                 .anyRequest().authenticated()               // 그 외 모든 요청은 JWT 인증 필요
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .successHandler(oAuth2SuccessHandler)
             )
             .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 

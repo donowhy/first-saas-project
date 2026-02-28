@@ -5,8 +5,8 @@ spring:
   # PostgreSQL DB 및 안정적인 커넥션 풀링(HikariCP) 설정
   datasource:
     url: jdbc:postgresql://localhost:5432/schedule_db
-    username: schedule_user
-    password: schedule_password
+    username: root              # 본인의 로컬 DB ID (기본값 postgres)
+    password: password              # 본인의 로컬 DB Password로 수정하세요!
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20       # 대규모 동시 요청 대비 (OOM 및 커넥션 고갈 방지)
@@ -31,7 +31,44 @@ spring:
     secret: "vms-schedule-managing-secret-key-for-jwt-256-bit-minimum-length"
     expiration: 86400000 # 24시간 (밀리초 단위)
 
+  # 소셜 로그인 OAuth2 설정
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "YOUR_GOOGLE_CLIENT_ID"
+            client-secret: "YOUR_GOOGLE_CLIENT_SECRET"
+            scope: profile, email
+          kakao:
+            client-id: "YOUR_KAKAO_CLIENT_ID"
+            client-secret: "YOUR_KAKAO_CLIENT_SECRET"
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            client-authentication-method: client_secret_post
+            client-name: Kakao
+            scope: profile_nickname, account_email
+        provider:
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
+
+  # 메일 발송 설정 (JavaMailSender 빈 생성을 위해 필요)
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: your-email@gmail.com
+    password: your-app-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 server:
-  port: 8080
+  port: 9447
   error:
     include-message: always       # 디버깅 편의 (운영 시에는 보안상 숨기는 것 권장)
