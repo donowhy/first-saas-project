@@ -38,69 +38,68 @@ const Auth: React.FC<AuthProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-zinc-950 flex items-center justify-center p-6 transition-colors duration-300">
+    <div className="min-h-screen bg-[var(--bg-main)] text-[var(--text-main)] flex items-center justify-center p-6 transition-colors duration-500">
       <div className="w-full max-w-md">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-12 h-12 bg-brand-600 rounded-2xl shadow-xl shadow-brand-500/20 mb-6">
-            <Zap size={24} className="text-white fill-white/20" />
+            <Zap size={24} className="text-white" />
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            {isLogin ? 'Welcome back to Nexus' : 'Join the workspace'}
-          </h1>
+          <h1 className="text-3xl font-bold tracking-tight">NexusFlow</h1>
+          <p className="text-sm text-[var(--text-muted)] mt-2">Professional Studio Management System</p>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 p-8 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-zinc-800">
+        <div className="bg-[var(--bg-card)] p-8 rounded-3xl border border-[var(--border-ui)] shadow-[var(--shadow-float)]">
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
               <div>
-                <label className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest ml-1 mb-1.5 block">Name</label>
+                <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest ml-1 mb-1.5 block">Full Name</label>
                 <div className="relative">
-                  <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                  <input type="text" required className="w-full h-12 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl pl-12 pr-4 text-sm font-medium outline-none focus:border-brand-500 transition-all" value={name} onChange={(e) => setName(e.target.value)}/>
+                  <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                  <input type="text" required className="w-full h-12 bg-[var(--bg-main)] border border-[var(--border-ui)] rounded-xl pl-12 pr-4 text-sm text-[var(--text-main)] outline-none focus:border-brand-500 transition-all" placeholder="Jane Doe" value={name} onChange={(e) => setName(e.target.value)}/>
                 </div>
               </div>
             )}
             <div>
-              <label className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest ml-1 mb-1.5 block">Email</label>
+              <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest ml-1 mb-1.5 block">Email Address</label>
               <div className="relative">
-                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input type="email" required className="w-full h-12 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl pl-12 pr-4 text-sm font-medium outline-none focus:border-brand-500 transition-all" value={email} onChange={(e) => setEmail(e.target.value)}/>
+                <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                <input type="email" required className="w-full h-12 bg-[var(--bg-main)] border border-[var(--border-ui)] rounded-xl pl-12 pr-4 text-sm text-[var(--text-main)] outline-none focus:border-brand-500 transition-all" placeholder="name@nexus.com" value={email} onChange={(e) => setEmail(e.target.value)}/>
               </div>
             </div>
             <div>
-              <label className="text-xs font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest ml-1 mb-1.5 block">Password</label>
+              <label className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest ml-1 mb-1.5 block">Password</label>
               <div className="relative">
-                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                <input type="password" required className="w-full h-12 bg-slate-50 dark:bg-zinc-950 border border-slate-200 dark:border-zinc-800 rounded-xl pl-12 pr-4 text-sm font-medium outline-none focus:border-brand-500 transition-all" value={password} onChange={(e) => setPassword(e.target.value)}/>
+                <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[var(--text-muted)]" />
+                <input type="password" required className="w-full h-12 bg-[var(--bg-main)] border border-[var(--border-ui)] rounded-xl pl-12 pr-4 text-sm text-[var(--text-main)] outline-none focus:border-brand-500 transition-all" placeholder="••••••••" value={password} onChange={(e) => setPassword(e.target.value)}/>
               </div>
             </div>
 
-            {error && <div className="p-3 bg-rose-50 dark:bg-rose-500/10 border border-rose-100 dark:border-rose-500/20 text-rose-500 text-xs font-medium rounded-lg">{error}</div>}
+            {error && <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-500 text-xs font-medium rounded-lg">{error}</div>}
 
-            <button type="submit" className="w-full h-12 bg-slate-900 dark:bg-white text-white dark:text-zinc-950 rounded-xl font-bold text-sm transition-all active:scale-[0.98] flex items-center justify-center gap-2">
-              {isLogin ? 'Sign In' : 'Sign Up'} <ArrowRight size={18} />
+            <button type="submit" className="w-full h-12 bg-brand-600 text-white rounded-xl font-bold text-sm transition-all hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2">
+              {isLogin ? 'Sign In' : 'Create Account'} <ArrowRight size={18} />
             </button>
           </form>
 
           <div className="relative my-6 text-center">
-            <span className="bg-white dark:bg-zinc-900 px-3 text-[10px] font-bold text-slate-400 dark:text-zinc-500 uppercase tracking-widest relative z-10">Or Social Login</span>
-            <div className="absolute top-1/2 left-0 w-full h-px bg-slate-100 dark:bg-zinc-800"></div>
+            <span className="bg-[var(--bg-card)] px-3 text-[9px] font-bold text-[var(--text-muted)] uppercase tracking-[0.2em] relative z-10">Integration</span>
+            <div className="absolute top-1/2 left-0 w-full h-px bg-[var(--border-ui)]"></div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            <button onClick={() => socialLogin('google')} className="h-12 border border-slate-200 dark:border-zinc-800 rounded-xl flex items-center justify-center gap-2 text-xs font-bold hover:bg-slate-50 dark:hover:bg-zinc-800 transition-all">
-              <Chrome size={18} className="text-slate-400" /> Google
+            <button onClick={() => socialLogin('google')} className="h-12 border border-[var(--border-ui)] rounded-xl flex items-center justify-center gap-2 text-xs font-bold hover:bg-[var(--bg-hover)] transition-all">
+              <Chrome size={18} className="text-red-500" /> Google
             </button>
-            <button onClick={() => socialLogin('kakao')} className="h-12 bg-[#FEE500] rounded-xl flex items-center justify-center gap-2 text-xs font-bold text-zinc-900 hover:opacity-90 transition-all">
-              <MessageCircle size={18} className="fill-zinc-900" /> Kakao
+            <button onClick={() => socialLogin('kakao')} className="h-12 bg-[#FEE500] rounded-xl flex items-center justify-center gap-2 text-xs font-bold text-black hover:opacity-90 transition-all">
+              <MessageCircle size={18} className="fill-black" /> Kakao
             </button>
           </div>
         </div>
 
-        <p className="text-center mt-6 text-sm font-medium text-slate-500 dark:text-zinc-500">
-          {isLogin ? "New to Nexus?" : "Already have an account?"}
-          <button onClick={() => setIsLogin(!isLogin)} className="text-brand-600 dark:text-brand-400 ml-2 font-bold hover:underline">
-            {isLogin ? 'Create account' : 'Sign in'}
+        <p className="text-center mt-6 text-sm text-[var(--text-muted)]">
+          {isLogin ? "New to the platform?" : "Already have an account?"}
+          <button onClick={() => setIsLogin(!isLogin)} className="text-brand-600 ml-2 font-bold hover:underline decoration-brand-500/30">
+            {isLogin ? 'Sign up free' : 'Sign in here'}
           </button>
         </p>
       </div>
