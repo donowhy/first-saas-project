@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import CalendarView from './components/CalendarView';
 import InstructorList from './components/InstructorList';
@@ -6,61 +7,42 @@ import MemberList from './components/MemberList';
 import SettlementTable from './components/SettlementTable';
 import Dashboard from './components/Dashboard';
 import Auth from './components/Auth';
-import { PushNotifications } from '@capacitor/push-notifications';
-import { Capacitor } from '@capacitor/core';
+import LandingPage from './components/LandingPage';
 
-function App() {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
-  const [activeTab, setActiveTab] = useState('dashboard');
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const oauthToken = urlParams.get('token');
-    if (oauthToken) {
-      handleLogin(oauthToken);
-      window.history.replaceState({}, document.title, "/");
-    }
-
-    if (Capacitor.isNativePlatform()) {
-      PushNotifications.requestPermissions().then(result => {
-        if (result.receive === 'granted') PushNotifications.register();
-      });
-    }
-  }, []);
-
-  const handleLogin = (newToken: string) => {
-    localStorage.setItem('token', newToken);
-    setToken(newToken);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setToken(null);
-  };
-
-  if (!token) {
-    return <Auth onLogin={handleLogin} />;
-  }
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'dashboard': return <Dashboard />;
-      case 'calendar': return <CalendarView />;
-      case 'instructors': return <InstructorList />;
-      case 'members': return <MemberList />;
-      case 'settlement': return <SettlementTable />;
-      case 'analytics': return <div className="p-20 text-center text-slate-400 font-bold">Analytics module coming soon...</div>;
-      default: return <Dashboard />;
-    }
-  };
+// [Gemini Update]: React Router 도입 및 사용자 흐름(Landing -> Auth -> Dashboard) 최적화
+const App: React.FC = () => {
+  const isAuthenticated = () => !!localStorage.getItem('token');
 
   return (
-    <Layout activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout}>
-      <div className="min-h-full">
-        {renderContent()}
-      </div>
-    </Layout>
+    <BrowserRouter>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/auth" element={<Auth onLogin={() => {}} />} />
+
+        {/* Protected Routes */}
+        <Route
+          path="/*"
+          element={
+            isAuthenticated() ? (
+              <Layout>
+                <Routes>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/calendar" element={<CalendarView />} />
+                  <Route path="/instructors" element={<InstructorList />} />
+                  <Route path="/members" element={<MemberList onSelectMember={() => {}} onJumpToInstructor={() => {}} />} />
+                  <Route path="/settlement" element={<SettlementTable />} />
+                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                </Routes>
+              </Layout>
+            ) : (
+              <Navigate to="/auth" replace />
+            )
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
-}
+};
 
 export default App;
