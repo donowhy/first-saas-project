@@ -2,138 +2,113 @@
 
 @theme {
   --font-sans: "Inter", "system-ui", "sans-serif";
-  --color-brand-400: #818cf8;
+  
+  /* Brand Colors - Sophisticated Indigo */
+  --color-brand-50: #eef2ff;
+  --color-brand-100: #e0e7ff;
   --color-brand-500: #6366f1;
   --color-brand-600: #4f46e5;
-  --color-dark-bg: #09090b;
-  --color-dark-panel: #18181b;
-  --color-dark-border: #27272a;
+  --color-brand-900: #312e81;
+}
+
+@layer base {
+  :root {
+    /* 
+      LIGHT MODE (Vercel / Linear Style) 
+      - Clean white background
+      - Subtle borders
+      - Deep slate text for high readability
+    */
+    --bg-main: #fafafa;
+    --bg-card: #ffffff;
+    --bg-hover: #f1f5f9;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-ui: #e2e8f0;
+    --ring-focus: rgba(99, 102, 241, 0.2);
+    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  }
+
+  .dark {
+    /* 
+      DARK MODE (Premium SaaS Style)
+      - True black main background
+      - Very dark slate cards to show depth
+      - Crisp white text
+    */
+    --bg-main: #000000;
+    --bg-card: #0a0a0a;
+    --bg-hover: #171717;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-ui: #262626;
+    --ring-focus: rgba(255, 255, 255, 0.1);
+    --shadow-card: 0 0 0 1px rgba(255,255,255,0.05);
+    --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  }
 }
 
 body {
   margin: 0;
-  background-color: var(--color-dark-bg);
-  color: #f4f4f5;
-  overflow: hidden; /* Prevent body scroll, handle inside layout */
+  background-color: var(--bg-main);
+  color: var(--text-main);
   font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Scrollbar customization */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #27272a;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+/* Utilities for Layout */
+.card-base {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-ui);
+  border-radius: 1rem; /* 16px */
+  box-shadow: var(--shadow-card);
+  transition: all 0.2s ease-in-out;
 }
 
-/* FullCalendar Dark Premium Styling */
-.fc {
-  font-family: var(--font-sans);
-  font-size: 13px;
-  --fc-border-color: #27272a;
-  --fc-page-bg-color: transparent;
-  --fc-neutral-bg-color: #18181b;
-  --fc-today-bg-color: rgba(99, 102, 241, 0.05);
-}
-
-.fc .fc-toolbar-title {
-  font-size: 1.25rem !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.025em;
-  color: #fafafa;
-}
-
-.fc .fc-button {
-  background-color: #18181b !important;
-  border: 1px solid #27272a !important;
-  color: #a1a1aa !important;
-  border-radius: 8px !important;
-  font-weight: 500 !important;
-  text-transform: capitalize !important;
-  box-shadow: none !important;
+.input-base {
+  background-color: var(--bg-main);
+  border: 1px solid var(--border-ui);
+  color: var(--text-main);
+  border-radius: 0.75rem; /* 12px */
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
   transition: all 0.2s ease;
 }
-
-.fc .fc-button:hover {
-  background-color: #27272a !important;
-  color: #fafafa !important;
+.input-base:focus {
+  outline: none;
+  border-color: var(--color-brand-500);
+  box-shadow: 0 0 0 3px var(--ring-focus);
 }
 
-.fc .fc-button-active {
-  background-color: #fafafa !important;
-  color: #09090b !important;
+.btn-primary {
+  background-color: var(--text-main);
+  color: var(--bg-main);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  transition: transform 0.1s, opacity 0.2s;
+}
+.btn-primary:hover {
+  opacity: 0.9;
+}
+.btn-primary:active {
+  transform: scale(0.98);
 }
 
-.fc .fc-timegrid-slot {
-  height: 3rem !important; /* Spaced out for elegance */
+/* FullCalendar Professional Reset */
+.fc {
+  font-family: var(--font-sans);
+  --fc-border-color: var(--border-ui);
+  --fc-page-bg-color: var(--bg-card);
+  --fc-neutral-bg-color: var(--bg-hover);
+  --fc-today-bg-color: var(--bg-hover);
+  font-size: 0.875rem;
 }
-
-.fc .fc-timegrid-slot-label-cushion {
-  font-size: 11px !important;
-  font-weight: 500 !important;
-  color: #71717a;
-}
-
-.fc .fc-col-header-cell {
-  padding: 12px 0 !important;
-  font-weight: 600 !important;
-  color: #a1a1aa;
-}
-
-.fc-v-event {
-  border: 1px solid rgba(255,255,255,0.1) !important;
-  border-radius: 6px !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
-  margin: 1px 2px !important;
-  opacity: 0.95;
-  transition: opacity 0.2s;
-}
-
-.fc-v-event:hover {
-  opacity: 1;
-}
-
-.fc-timegrid-now-indicator-line {
-  border-color: var(--color-brand-500) !important;
-  border-width: 2px !important;
-  box-shadow: 0 0 10px var(--color-brand-500);
-}
-
-.fc-timegrid-now-indicator-arrow {
-  border-color: var(--color-brand-500) !important;
-  background-color: var(--color-brand-500) !important;
-}
-
-/* Glassmorphism utilities */
-.glass-panel {
-  background: rgba(24, 24, 27, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.glow-effect {
-  position: relative;
-}
-.glow-effect::before {
-  content: '';
-  position: absolute;
-  top: -1px; left: -1px; right: -1px; bottom: -1px;
-  background: linear-gradient(45deg, #6366f1, #a855f7, #ec4899);
-  z-index: -1;
-  border-radius: inherit;
-  filter: blur(8px);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.glow-effect:hover::before {
-  opacity: 0.5;
-}
+.fc-theme-standard td, .fc-theme-standard th { border-color: var(--border-ui); }
+.fc .fc-toolbar-title { font-size: 1.25rem !important; font-weight: 700; color: var(--text-main); }
+.fc .fc-col-header-cell { padding: 12px 0 !important; color: var(--text-muted); font-weight: 500; }
+.fc-v-event { border: none !important; border-radius: 6px !important; margin: 1px !important; box-shadow: var(--shadow-card); }
+.fc-event-main { padding: 4px 6px !important; }
