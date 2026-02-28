@@ -5,6 +5,7 @@ import org.schedule.schedulemanaging.security.JwtAuthenticationFilter;
 import org.schedule.schedulemanaging.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -35,7 +36,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable) // REST API에서는 CSRF 보호 비활성화
-            .cors(AbstractHttpConfigurer::disable) // WebConfig에서 별도 설정됨
+            .cors(Customizer.withDefaults()) // [Gemini Update]: WebConfig의 CORS 설정을 Security 필터에 적용
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // 세션 사용 안 함
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**", "/oauth2/**", "/login/oauth2/**").permitAll() // 로그인, 회원가입, OAuth2 인증은 허용

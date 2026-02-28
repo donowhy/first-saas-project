@@ -14,10 +14,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // SaaS 환경: 모든 클라이언트의 API 접근을 위한 CORS 설정
         registry.addMapping("/**")
-                .allowedOriginPatterns("*") // 주의: 운영 환경에서는 실제 프론트엔드 도메인(예: "https://app.myschedule.com")으로 제한하여 보안 강화
+                .allowedOrigins("http://localhost:5173", "http://127.0.0.1:5173") // React 개발 서버 도메인 명시
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true)
-                .maxAge(3600); // 1시간 동안 Preflight 캐싱 (네트워크 오버헤드 감소 및 성능 향상)
+                .maxAge(3600); // 1시간 동안 Preflight 캐싱
     }
 }
