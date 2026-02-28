@@ -1,114 +1,83 @@
 @import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css");
 
 @theme {
-  --font-sans: "Inter", "system-ui", "sans-serif";
-  
-  /* Brand Colors - Sophisticated Indigo */
-  --color-brand-50: #eef2ff;
-  --color-brand-100: #e0e7ff;
-  --color-brand-500: #6366f1;
-  --color-brand-600: #4f46e5;
-  --color-brand-900: #312e81;
+  --font-sans: "Pretendard Variable", "Pretendard", "Inter", "system-ui", "sans-serif";
+  --color-indigo-600: #4f46e5;
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-900: #0f172a;
 }
 
 @layer base {
+  /* [Gemini Update]: 다크 모드를 완전히 무시하고 라이트 테마로 고정 */
   :root {
-    /* 
-      LIGHT MODE (Vercel / Linear Style) 
-      - Clean white background
-      - Subtle borders
-      - Deep slate text for high readability
-    */
-    --bg-main: #fafafa;
+    --bg-app: #f8fafc;
     --bg-card: #ffffff;
-    --bg-hover: #f1f5f9;
     --text-main: #0f172a;
-    --text-muted: #64748b;
+    --text-muted: #475569;
     --border-ui: #e2e8f0;
-    --ring-focus: rgba(99, 102, 241, 0.2);
-    --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-    --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+    --accent: #4f46e5;
   }
 
-  .dark {
-    /* 
-      DARK MODE (Premium SaaS Style)
-      - True black main background
-      - Very dark slate cards to show depth
-      - Crisp white text
-    */
-    --bg-main: #000000;
-    --bg-card: #0a0a0a;
-    --bg-hover: #171717;
-    --text-main: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-ui: #262626;
-    --ring-focus: rgba(255, 255, 255, 0.1);
-    --shadow-card: 0 0 0 1px rgba(255,255,255,0.05);
-    --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  body {
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    margin: 0;
+    font-family: var(--font-sans);
+    @apply antialiased;
   }
 }
 
-body {
-  margin: 0;
-  background-color: var(--bg-main);
-  color: var(--text-main);
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Utilities for Layout */
-.card-base {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-ui);
-  border-radius: 1rem; /* 16px */
-  box-shadow: var(--shadow-card);
-  transition: all 0.2s ease-in-out;
-}
-
-.input-base {
-  background-color: var(--bg-main);
-  border: 1px solid var(--border-ui);
-  color: var(--text-main);
-  border-radius: 0.75rem; /* 12px */
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
-}
-.input-base:focus {
-  outline: none;
-  border-color: var(--color-brand-500);
-  box-shadow: 0 0 0 3px var(--ring-focus);
-}
-
-.btn-primary {
-  background-color: var(--text-main);
-  color: var(--bg-main);
-  border-radius: 0.75rem;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  font-size: 0.875rem;
-  transition: transform 0.1s, opacity 0.2s;
-}
-.btn-primary:hover {
-  opacity: 0.9;
-}
-.btn-primary:active {
-  transform: scale(0.98);
-}
-
-/* FullCalendar Professional Reset */
+/* [Gemini Update]: Tailwind v4 @apply 문법 엄격 준수 (!important 제거) */
 .fc {
-  font-family: var(--font-sans);
-  --fc-border-color: var(--border-ui);
-  --fc-page-bg-color: var(--bg-card);
-  --fc-neutral-bg-color: var(--bg-hover);
-  --fc-today-bg-color: var(--bg-hover);
-  font-size: 0.875rem;
+  --fc-border-color: #f1f5f9;
+  --fc-button-bg-color: #ffffff;
+  --fc-button-border-color: #e2e8f0;
+  --fc-button-hover-bg-color: #f8fafc;
+  --fc-button-active-bg-color: #f1f5f9;
+  --fc-today-bg-color: #f5f7ff;
+  font-family: "Pretendard Variable", sans-serif !important;
 }
-.fc-theme-standard td, .fc-theme-standard th { border-color: var(--border-ui); }
-.fc .fc-toolbar-title { font-size: 1.25rem !important; font-weight: 700; color: var(--text-main); }
-.fc .fc-col-header-cell { padding: 12px 0 !important; color: var(--text-muted); font-weight: 500; }
-.fc-v-event { border: none !important; border-radius: 6px !important; margin: 1px !important; box-shadow: var(--shadow-card); }
-.fc-event-main { padding: 4px 6px !important; }
+
+.fc .fc-toolbar-title {
+  @apply text-xl font-black text-slate-900 tracking-tight;
+}
+
+.fc .fc-col-header-cell-cushion {
+  @apply py-3 text-xs font-black text-slate-500 uppercase tracking-widest inline-block;
+}
+
+.fc .fc-timegrid-slot-label-cushion {
+  @apply text-[10px] font-bold text-slate-400;
+}
+
+.fc .fc-button-primary {
+  @apply bg-white border-slate-200 text-slate-600 font-bold px-4 py-2 rounded-xl transition-all shadow-sm;
+}
+
+.fc .fc-button-primary:hover {
+  @apply bg-slate-50 text-slate-900 border-slate-300;
+}
+
+/* [Gemini Update]: ! 중요 표기법을 클래스명 앞에 붙여 v4 문법 오류 해결 */
+.fc .fc-button-primary:not(:disabled).fc-button-active, 
+.fc .fc-button-primary:not(:disabled):active {
+  @apply !bg-indigo-50 !border-indigo-200 !text-indigo-600 !shadow-none;
+}
+
+/* 스크롤바 디자인 */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
