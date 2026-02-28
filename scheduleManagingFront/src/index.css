@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "system-ui", "sans-serif";
+}
+
+body {
+  margin: 0;
+  background-color: #f8fafc;
+  overflow: hidden; /* 전체 스크롤 방지 */
+}
+
+/* FullCalendar Compact & High Contrast Styling */
+.fc {
+  font-family: var(--font-sans);
+  font-size: 13px;
+}
+
+/* 시간 슬롯 높이 대폭 축소 (한눈에 보기 위해) */
+.fc .fc-timegrid-slot {
+  height: 2.2rem !important; /* 기존 4rem -> 2.2rem */
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.fc .fc-timegrid-slot-label {
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  color: #94a3b8;
+  vertical-align: top !important;
+}
+
+.fc .fc-col-header-cell {
+  background: #ffffff;
+  padding: 10px 0 !important;
+  font-weight: 800 !important;
+  color: #1e293b;
+  border-bottom: 2px solid #f1f5f9 !important;
+}
+
+/* 예약된 수업 블록 - 강한 가독성 */
+.fc-v-event {
+  border: none !important;
+  border-radius: 6px !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  margin: 1px !important;
+}
+
+.fc-event-main {
+  padding: 4px !important;
+}
+
+/* 현재 시간 선 강조 */
+.fc-timegrid-now-indicator-line {
+  border-color: #ef4444 !important;
+  border-width: 2px !important;
+}
+
+/* 스크롤바 미니멀 */
+.fc-scroller::-webkit-scrollbar {
+  width: 5px;
+}
+.fc-scroller::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
